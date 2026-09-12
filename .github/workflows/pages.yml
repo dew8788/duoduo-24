@@ -1,0 +1,56 @@
+# 推送到 main 后自动构建并发布到 GitHub Pages
+#
+# 仓库只需开启一次：Settings → Pages → Source 选「GitHub Actions」。
+# （下面的 configure-pages 也带了 enablement: true，多数情况下会自动开启。）
+#
+# 发布地址：https://<你的用户名>.github.io/<仓库名>/
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 跑引擎测试（保证 300 关可解、求解器正确）
+        run: node test/engine.test.cjs
+
+      - name: 打包（关卡数据 + 引擎 + 界面 内联成单文件）
+        run: node build.mjs
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

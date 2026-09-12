@@ -1,0 +1,14 @@
+# 构建产物（由 CI 或本地 build.mjs 生成，不入库）
+dist/
+
+# 参考素材：4399 原版游戏的截图与美术资源，版权不属于本项目，不要公开分发
+docs/ref/
+
+# 测试产物
+test/screenshots/
+test_log.txt
+*.log
+
+# 临时
+iPad扫码.png
+measure.py

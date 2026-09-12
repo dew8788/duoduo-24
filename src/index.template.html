@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="朵朵的24点">
+<meta name="theme-color" content="#ffffff">
+<meta name="format-detection" content="telephone=no,email=no,address=no">
+<meta name="description" content="朵朵的24点：300 关闯关 + 儿童加减模式，纯本地运行、离线可玩。">
+<title>朵朵的24点</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+/*{{CSS}}*/
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ============================ 首页 ============================ -->
+  <section class="screen active" id="screen-home">
+    <div class="home-wrap">
+      <div class="logo">
+        <span class="ch c1">朵</span>
+        <span class="ch c2">朵</span>
+        <span class="ch c3">的</span>
+        <span class="badge24">24</span>
+        <span class="ch c4">点</span>
+      </div>
+      <div class="home-actions">
+        <button class="btn btn-green" id="btn-continue">闯 关</button>
+        <button class="btn btn-orange" id="btn-kid">儿童模式</button>
+        <button class="btn btn-green-light" id="btn-practice">自由练习</button>
+        <button class="btn btn-grey" id="btn-chapters">选择关卡</button>
+      </div>
+      <div class="home-foot" id="home-progress"></div>
+    </div>
+  </section>
+
+  <!-- ============================ 章节 ============================ -->
+  <section class="screen" id="screen-chapters">
+    <header class="topbar">
+      <button class="icon-btn arrow" data-back="home">←</button>
+      <div class="title-block center">
+        <div class="t1 orange" id="chapters-title">选择关卡</div>
+        <div class="t2" id="chapters-sub">你已经通关 0 / 300 关</div>
+      </div>
+      <button class="icon-btn gear" id="btn-settings-1" title="设置">⚙</button>
+    </header>
+    <div class="scroll"><div class="grid-chapters" id="chapter-grid"></div></div>
+  </section>
+
+  <!-- ============================ 选关 ============================ -->
+  <section class="screen" id="screen-levels">
+    <header class="topbar">
+      <button class="icon-btn arrow" id="btn-levels-back">←</button>
+      <div class="title-block center">
+        <div class="t1 orange" id="levels-title"></div>
+        <div class="t2" id="levels-sub"></div>
+      </div>
+      <button class="icon-btn" id="btn-chapter-next" title="下一章">›</button>
+    </header>
+    <div class="scroll"><div class="grid-levels" id="level-grid"></div></div>
+    <div class="dots" id="level-dots"></div>
+  </section>
+
+  <!-- ============================ 牌桌 ============================ -->
+  <section class="screen" id="screen-game">
+    <header class="topbar">
+      <button class="icon-btn arrow" id="btn-game-back">←</button>
+      <div class="title-block">
+        <div class="t1" id="game-title"></div>
+        <div class="t2" id="game-sub"></div>
+      </div>
+      <button class="icon-btn blue" id="btn-reset" title="重来">↻</button>
+      <button class="icon-btn bulb" id="btn-hint" title="提示">💡</button>
+    </header>
+
+    <main class="board">
+      <div class="cards" id="cards"></div>
+      <div class="ops" id="ops"></div>
+      <div class="expr-line" id="expr-line"></div>
+    </main>
+
+    <footer class="pad">
+      <button class="tool-btn" id="btn-undo">撤销</button>
+      <button class="tool-btn" id="btn-answer">答案</button>
+      <button class="tool-btn" id="btn-next-puzzle">换一题</button>
+    </footer>
+  </section>
+
+</div>
+
+<div class="modal-root" id="modal-root"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/*{{LEVELS}}*/
+</script>
+<script>
+/*{{ENGINE}}*/
+</script>
+<script>
+/*{{APP}}*/
+</script>
+</body>
+</html>
