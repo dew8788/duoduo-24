@@ -75,25 +75,31 @@ if (!iconCount) {
 // Service Worker 与 PWA 清单：仅在使用 http(s) 访问（局域网/托管）时生效，
 // 直接用文件方式打开 index.html 也能玩，只是没有离线缓存与"添加到主屏幕"。
 const sw = `/* 朵朵的24点 · Service Worker：离线缓存应用外壳 */
-const CACHE = 'p24-v5';
+const CACHE = 'p24-v6';
 const ASSETS = ['./', './index.html', './manifest.webmanifest', './icon-180.png', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', (e) => {
-  // 逐个缓存并各自容错：某个文件缺失也不会让整个安装失败（否则会失去离线能力）
-  e.waitUntil((async () => {
-    const cache = await caches.open(CACHE);
-    await Promise.all(ASSETS.map((u) => cache.add(u).catch(() => {})));
-    await self.skipWaiting();
-  })());
+  // 立刻激活：绝不让预缓存拖住安装。网络慢时（GitHub Pages 从国内拉文件可能十几秒）
+  // 一旦阻塞在 install 里，SW 会永远停在 installing，离线能力就直接失效。
+  e.waitUntil(self.skipWaiting());
 });
 
 self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  );
+  e.waitUntil(self.clients.claim());
+  warmCache();
 });
+
+// 后台预热缓存，不阻塞任何事件；失败的资源也不影响激活。
+// 真正兜底的是下面的 fetch 处理器：它会在每次联网请求时顺手把资源写进缓存。
+function warmCache() {
+  // 清掉旧版本缓存
+  caches.keys()
+    .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
+    .catch(() => {});
+  caches.open(CACHE)
+    .then((cache) => Promise.all(ASSETS.map((u) => cache.add(u).catch(() => {}))))
+    .catch(() => {});
+}
 
 function isDoc(req) {
   const accept = req.headers.get('accept') || '';
