@@ -894,11 +894,11 @@
   function registerSW() {
     if (!('serviceWorker' in navigator)) return;
     if (location.protocol !== 'http:' && location.protocol !== 'https:') return;
-    var go = function () {
-      navigator.serviceWorker.register('sw.js').catch(function () { /* 失败不影响游戏 */ });
-    };
-    if (document.readyState === 'complete') go();
-    else window.addEventListener('load', go);
+    // 直接注册，不等 load 事件——注册太晚会和页面加载抢时间，
+    // 在 GitHub Pages 上实测会导致 navigator.serviceWorker.ready 迟迟不 resolve
+    navigator.serviceWorker.register('sw.js').catch(function (e) {
+      if (window.console && console.warn) console.warn('[P24] Service Worker 注册失败：', e && e.message);
+    });
   }
 
   function init() {
